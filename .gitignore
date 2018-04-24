@@ -4,5 +4,6 @@ log/*.log
 tmp/**
 node_modules/
 .sass-cache
+package-lock.json
 firebase.json
 bower_components

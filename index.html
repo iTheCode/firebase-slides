@@ -7,7 +7,7 @@
     <title>Building Realtime Apps with Firebase</title>
 
     <meta name="description" content="Intro to Firebase">
-    <meta name="author" content="YOUR_NAME">
+    <meta name="author" content="iTheCode">
 
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -19,7 +19,7 @@
 
     <!-- For syntax highlighting -->
     <link rel="stylesheet" href="lib/css/zenburn.css">
-
+    <link rel="icon" type="image/png" href="images/firebase-logo.png" />
     <!-- If the query includes 'print-pdf', include the PDF print sheet -->
     <script>
       if( window.location.search.match( /print-pdf/gi ) ) {
@@ -37,16 +37,6 @@
 
   <script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
   <script>
-    window.addEventListener('load', installCounter);
-
-    function installCounter() {
-      var devsRef = new Firebase("https://firebase-website.firebaseio.com/stats/signups");
-      var counterSpan = document.getElementById('current-devs');
-      devsRef.on("value", function (snap) {
-        // Use thousand separator in counter.
-        counterSpan.textContent = snap.val().toLocaleString();
-      });
-    }
     </script>
 
     <!--[if lt IE 9]>
@@ -67,13 +57,24 @@
         <!--
           Intro
         -->
+
         <section title="">
-          <br><br>
-          <h2>Intro to Firebase</h2>
-          <img src="images/firebase-logo.png" class="no-style">
+          <h2>GDG Ica</h2>
+          <img src="images/gdgica_04.png" class="no-style" width="250px" height="250px">
           <br> <br>
           <p>
-            <h6>YOUR_NAME / <a href="http://twitter.com/YOUR_TWITTER_HANDLE">@YOUR_TWITTER_HANDLE</a></h6>
+            <h6>GDG Ica / <a href="http://fb.com/GDGIca">@GDGIca</a></h6>
+            <h7>Luis Uculmana Lara / <a href="http://twitter.com/iTheCode">@iTheCode</a> |  <a href="http://fb.com/luis.uculmanalara">luis.uculmanalara</a></h7>
+
+          </p>
+        </section>
+
+        <section>
+          <br><br>
+          <h2>Intro to Firebase</h2>
+          <img src="images/firebase-logo.png" class="no-style" width="300px" height="300px">
+          <br> <br>
+          <p>
 
           </p>
         </section>
@@ -89,7 +90,7 @@
 
         <section>
           <h3>The Full Stack</h3>
-          <img src="images/full-stack.png" alt="The Full Stack" class="no-style" />
+          <img src="images/full-stack.png" alt="The Full Stack" class="no-style" height="500px"/>
         </section>
 
         <section>
@@ -120,7 +121,7 @@
         -->
         <section>
           <h3>Firebase</h3>
-          <img src="images/firebase-logo.png" class="no-style era-point">
+          <img src="images/firebase-logo.png" class="no-style era-point" width="300px" height="300px">
           <br>
           <p class="text-cream">The <span class="text-discs">Realtime Backend</span></p>
           <p class="text-cream">for your App</p>
@@ -146,7 +147,7 @@
         </section>
 
         <section>
-          <h2>Cloud database</h2>
+          <h2>Cloud Database</h2>
           <p class="era-point">NoSQL data-store</p>
           <p class="era-point">Returns JSON from a RESTful API</p>
         </section>
@@ -155,6 +156,11 @@
           <img src="images/simple-api.png" alt="" class="no-style">
         </section>
 
+        <section>
+          <h2>Cloud Firestore</h2>
+          <img src="images/firestore.jpeg" alt="" class="no-style" width="800" height="400">
+          <p class="era-point">Scalable and Flexible NoSQL</p>
+        </section>
         <section>
           <h2>Realtime Data</h2>
           <p class="era-point text-cream">
@@ -172,20 +178,24 @@
           <img src="images/platforms.png" alt="" class="no-style">
         </section>
 
-        <section>
+        <section >
           <h2>Store Data</h2>
           <code-box langs="JavaScript,Swift,Java">
             <code-example lang="JavaScript">
-var ref = new Firebase("https://&lt;your-firebase-app&gt;.firebaseio.com/message");
-ref.set('All the things');
+var citiesRef = db.collection('cities');
+
+var setSf = citiesRef.doc('SF').set({
+    name: 'San Francisco', state: 'CA', country: 'USA',
+    capital: false, population: 860000 });
             </code-example>
             <code-example lang="Swift">
-let ref = Firebase(url: "https://&lt;your-firebase-app&gt;.firebaseio.com/message")
-ref.setValue("All the things")
+let citiesRef = db.collection("cities")
+citiesRef.document("SF").setData([ "name": "San Francisco", "state": "CA", "country": "USA", "capital": false, "population": 860000])
             </code-example>
             <code-example lang="Java">
-Firebase ref = new Firebase("https://&lt;your-firebase-app&gt;.firebaseio.com/message");
-ref.setValue("All the things");
+CollectionReference cities = db.collection("cities");
+List<ApiFuture<WriteResult>> futures = new ArrayList<>();
+futures.add(cities.document("SF").set(new City("San Francisco", "CA", "USA", false, 860000L)));
             </code-example>
           </code-box>
 
@@ -196,26 +206,38 @@ ref.setValue("All the things");
 
           <code-box langs="JavaScript,Swift,Java">
             <code-example lang="JavaScript">
-var ref = new Firebase("https://&lt;your-firebase-app&gt;.firebaseio.com/message");
-ref.on("value", function(snap) {
-  console.log(snap.val());
-});
+db.collection("cities").doc("SF")
+    .onSnapshot(function(doc) {
+        console.log("Current data: ", doc.data());
+    });
             </code-example>
             <code-example lang="Swift">
-let ref = Firebase(url: "https://&lt;your-firebase-app&gt;.firebaseio.com/message")
-ref.observeEventType(.Value, withBlock: { snap in
-  println(snap.value)
-})
+db.collection("cities").document("SF")
+    .addSnapshotListener { documentSnapshot, error in
+      guard let document = documentSnapshot else {
+        print("Error fetching document: \(error!)")
+        return
+      }
+      print("Current data: \(document.data())")
+    }
             </code-example>
             <code-example lang="Java">
-Firebase ref = new Firebase("https://&lt;your-firebase-app&gt;.firebaseio.com/message");
-ref.addValueEventListener(new ValueEventListener() {
+DocumentReference docRef = db.collection("cities").document("SF");
+docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
   @Override
-  public void onDataChange(DataSnapshot snapshot) {
-    System.out.println(snapshot.getValue());
+  public void onEvent(@Nullable DocumentSnapshot snapshot,
+                      @Nullable FirestoreException e) {
+    if (e != null) {
+      System.err.println("Listen failed: " + e);
+      return;
+    }
+
+    if (snapshot != null && snapshot.exists()) {
+      System.out.println("Current data: " + snapshot.getData());
+    } else {
+      System.out.print("Current data: null");
+    }
   }
-  @Override public void onCancelled(FirebaseError error) { }
-});
             </code-example>
           </code-box>
 
@@ -247,20 +269,6 @@ ref.addValueEventListener(new ValueEventListener() {
             On mobile, Firebase persists data to a local store. The app will continue
             to work even across app restarts.
           </p>
-
-        </section>
-
-        <section>
-          <h3>One line of code</h3>
-
-          <code-box langs="Swift,Java">
-            <code-example lang="Swift">
-Firebase.defaultConfig().persistenceEnabled = true
-            </code-example>
-            <code-example lang="Java">
-Firebase.getDefaultConfig().setPersistenceEnabled(true);
-            </code-example>
-          </code-box>
 
         </section>
 
@@ -308,76 +316,25 @@ Firebase.getDefaultConfig().setPersistenceEnabled(true);
 
           <h3>Authentication</h3>
 
-          <code-box langs="JavaScript,Swift,Java">
+          <code-box langs="JavaScript">
             <code-example lang="JavaScript" prop="one">
 // Login with Google
-ref.authWithOAuthPopup('google', function(error, authData) {
-  console.log(authData);
-});
-            </code-example>
-
-            <code-example lang="Swift">
-ref.authWithOAuthProvider("google", token: "&lt;OAuth Token&gt;",
-    withCompletionBlock: { error, authData in
-    if error != nil {
-        // Error authenticating with Firebase with OAuth token
-    } else {
-        // User is now logged in!
-        println("Successfully logged in! \(authData)")
-    }
-})
-            </code-example>
-
-            <code-example lang="Java">
-ref.authWithOAuthToken("google", "&lt;OAuth Token&gt;", new Firebase.AuthResultHandler() {
-    @Override
-    public void onAuthenticated(AuthData authData) {
-        // the Google user is now authenticated with your Firebase app
-    }
-
-    @Override
-    public void onAuthenticationError(FirebaseError firebaseError) {
-        // there was an error
-    }
-});
-            </code-example>
-
-          </code-box>
-
-        </section>
-
-        <section class="hasCode">
-
-          <h3>Authentication</h3>
-
-          <code-box langs="JavaScript,Swift,Java">
-            <code-example lang="JavaScript" prop="one">
-// Listen for authentcated users
-ref.onAuth(function(authData) {
-  if(authData) {
-    console.log('User is logged in!');
-  }
-});
-            </code-example>
-
-            <code-example lang="Swift">
-// Listen for authenticated users
-ref.observeAuthEventWithBlock { authData in
-    if authData != nil {
-        println("User is logged in! \(authData)")
-    }
-}
-            </code-example>
-
-            <code-example lang="Java">
-// Listen for authentcated users
-ref.addAuthStateListener(new Firebase.AuthStateListener() {
-    @Override
-    public void onAuthStateChanged(AuthData authData) {
-        if (authData != null) {
-            System.out.println("User is logged in!");
-        }
-    }
+var provider = new firebase.auth.GoogleAuthProvider();
+firebase.auth().signInWithPopup(provider).then(function(result) {
+  // This gives you a Google Access Token. You can use it to access the Google API.
+  var token = result.credential.accessToken;
+  // The signed-in user info.
+  var user = result.user;
+  // ...
+}).catch(function(error) {
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  // The email of the user's account used.
+  var email = error.email;
+  // The firebase.auth.AuthCredential type that was used.
+  var credential = error.credential;
+  // ...
 });
             </code-example>
 
@@ -508,11 +465,11 @@ firebase deploy
 					<p class="text-small era-point">CDN cached assets</p>
 					<p class="text-small era-point">One click rollbacks</p>
 				</section>
-
+        <!--
         <section>
           <h1>(Optional) Live Coding</h1>
         </section>
-
+        -->
         <section>
 					<h3>Tooling & Integration</h3>
 				</section>
@@ -520,47 +477,15 @@ firebase deploy
 
         <section>
           <h3>Bindings</h3>
-          <img src="images/backbonejs.png" class="framework-logo no-style" />
-          <img src="images/emberjs.png" class="framework-logo no-style" />
           <img src="images/react.png" class="framework-logo no-style" />
           <img src="images/angularjs.png" class="framework-logo no-style" />
+          <img src="images/vue.png" class="framework-logo no-style" />
         </section>
-
-        <section>
-					<h3>AngularFire</h3>
-					<p class="text">A chat app in AngularFire</p>
-					<pre>
-						<code data-trim class="javascript">
-var app = app.module('app', ['firebase']);
-app.controller('ChatCtrl', function($scope, $firebaseArray) {
-  var ref = new Firebase('https://&lt;your-firebase&gt;.firebaseio.com/messages');
-  $scope.messages = $firebaseArray(ref);
-});
-						</code>
-					</pre>
-					<pre>
-						<code data-trim class="html">
-&lt;html&gt;
-  &lt;body ng-app="app"&gt;
-    &lt;div ng-controller="ChatCtrl"&gt;
-      &lt;p ng-repeat="message in messages"&gt;message.text&lt;/p&gt;
-    &lt;/div&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-						</code>
-					</pre>
-				</section>
-
-        <section>
-					<h3>Geofire</h3>
-					<p class="text-smaller">Store and query items based on their geographic location in realtime</p>
-					<iframe src="https://geofire.firebaseapp.com/sfVehicles/" height="450px" width="100%"></iframe>
-				</section>
 
 				<section>
 					<h3>Well Documented</h3>
 					<a class="text-tarheel" href="https://firebase.com/docs">
-						<img src="images/docs-site.png">
+						<img src="images/docs.png">
 					</a>
 				</section>
 
@@ -584,13 +509,10 @@ app.controller('ChatCtrl', function($scope, $firebaseArray) {
               <span class="text-discs">Twitch.tv</span> - Notifying users when realtime streams go live
             </li>
             <li class="era-point">
-              <span class="text-discs">Citrix</span> - Manages presence in GoTo Meeting
+              <span class="text-discs">Shazam</span> - Over 120mn users each month.
             </li>
             <li class="era-point">
-              <span class="text-discs">CBS</span> - Powers the chat for Big Brother's Live Stream
-            </li>
-            <li class="era-point">
-              <span class="text-discs">Warby Parker</span> - Powering pneumatic tubes
+              <span class="text-discs">PicCollage</span> - Party with your photos!
             </li>
           </ul>
         </section>
@@ -612,22 +534,23 @@ app.controller('ChatCtrl', function($scope, $firebaseArray) {
 				</section>
 
         <section>
+          <h2>Firebase Analytics</h2>
+          <img src="images/analytics.jpg" alt="" class="no-style" width="800" height="400">
+          <p class="era-point">Reports and Stats of your APP</p>
+        </section>
+
+        <section>
           <h1>ASK ME QUESTIONS</h1>
-          <h5>YOUR_NAME / <a href="http://twitter.com/YOUR_TWITTER_HANDLE">@YOUR_TWITTER_HANDLE</a></h5>
-          <h5>YOUR_JOB / <a href="http://twitter.com/YOUR_COMPANY_TWITTER_HANDLE">@YOUR_COMPANY</a></h5>
+          <h5>Luis Uculmana Lara / <a href="http://twitter.com/iTheCode">@iTheCode</a></h5>
+          <h5>GDG Ica / <a href="http://twitter.com/GDG_Ica">@GDG_Ica</a></h5>
         </section>
 
         <section>
           <h2>Assets Used</h2>
 
           <ul>
-            <li><a href="https://thenounproject.com/search/?q=database&i=9658">https://thenounproject.com/search/?q=database&i=9658</a></li>
-            <li><a href="https://thenounproject.com/search/?q=server&i=34235">https://thenounproject.com/search/?q=server&i=34235</a></li>
-            <li><a href="https://thenounproject.com/search/?q=api&i=137607">https://thenounproject.com/search/?q=api&i=137607</a></li>
-            <li><a href="https://thenounproject.com/search/?q=users&i=36217">https://thenounproject.com/search/?q=users&i=36217</a></li>
-            <li><a href="https://thenounproject.com/search/?q=macbook&i=20320">https://thenounproject.com/search/?q=macbook&i=20320</a></li>
-            <li><a href="https://thenounproject.com/search/?q=iphone&i=5765">https://thenounproject.com/search/?q=iphone&i=5765</a></li>
-            <li><a href="https://thenounproject.com/search/?q=nexus-5&i=26045">https://thenounproject.com/search/?q=nexus-5&i=26045</a></li>
+            <li><a href="https://firebase.google.com/docs/">Official Documentation</a></li>
+            <li><a href="https://github.com/firebase/firebase-intro-presentation">Github</a></li>
           </ul>
 
         </section>
@@ -637,7 +560,7 @@ app.controller('ChatCtrl', function($scope, $firebaseArray) {
     </div>
 
     <script src="lib/js/head.min.js"></script>
-    <script src="js/reveal.min.js"></script>
+    <script src="js/reveal.js"></script>
     <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 
     <script>

@@ -1,19 +1,3 @@
-# Intro to Firebase
-
-This slide deck can be customized to give an introductory talk about Firebase. It is powered by [reveal.js](http://lab.hakim.se/reveal-js), a wonderful and powerful framework for creating HTML presentations.
-
-### [Boilerplate Site - https://intro-to-firebase.firebaseapp.com/](https://intro-to-firebase.firebaseapp.com/)
-
-## Presentations
-
-Here are some past presentations made with this desk:
-
-| Presenter | Event | Date | Contact |
-| --------- | ----- | ---- | ------- |
-| Mike Koss | [Seattle GDG](https://plus.sandbox.google.com/events/cp5b162fccbtrk4l3ah2blb5je8) | April 20, 2015 | koss@firebase.com |
-| Jacob Wenger | GDG Leads Summit | May 27, 2015 | jacob@firebase.com |
-
-If you end up using this deck, please let us know so we can share the presentation here!
 
 ## Setup
 
